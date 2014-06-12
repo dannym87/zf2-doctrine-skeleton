@@ -15,16 +15,20 @@ The only dependency required is ant and Java. A build script exists under the bu
 Installation
 ------------
 1. Copy build.properties.example from the build/ folder to build.properties
-    cd build/
-    cp build.properties.example build.properties
+```
+cd build/
+cp build.properties.example build.properties
+```
 
 2. Edit the build.properties file and enter your database config
-    db.host=localhost
-    db.port=3306
-    db.user=root
-    db.password=password
-    db.name=test_db
-    db.test.name=testing_db
+```
+db.host=localhost
+db.port=3306
+db.user=root
+db.password=password
+db.name=test_db
+db.test.name=testing_db
+```
 
 Note, the db.test.name should specify a separate database. This is so PHPUnit can apply all of the data fixtures to a separate database, leaving
 your development database as is. I've opted to use Doctrine Data Fixtures so the exact state of the test database is known for every single
@@ -32,7 +36,9 @@ unit/integration test. Obviously, unit tests won't care about the state of the d
 rather, than, AbstractPHPUnitTestCase.
 
 3. Run rebuild to get the application up and running and apply the necessary config
-    ant rebuild
+```
+ant rebuild
+```
 
 The build process will do a number of things:;
 1. Run composer to install all of the necessary dependencies.
