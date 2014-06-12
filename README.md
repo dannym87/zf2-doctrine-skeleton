@@ -14,13 +14,15 @@ The only dependency required is ant and Java. A build script exists under the bu
 
 Installation
 ------------
-1. Copy build.properties.example from the build/ folder to build.properties
+Copy build.properties.example from the build/ folder to build.properties
+
 ```
 cd build/
 cp build.properties.example build.properties
 ```
 
-2. Edit the build.properties file and enter your database config
+Edit the build.properties file and enter your database config
+
 ```
 db.host=localhost
 db.port=3306
@@ -35,12 +37,14 @@ your development database as is. I've opted to use Doctrine Data Fixtures so the
 unit/integration test. Obviously, unit tests won't care about the state of the database, therefore, you can simply extend \PHPUnit_Framework_TestCase,
 rather, than, AbstractPHPUnitTestCase.
 
-3. Run rebuild to get the application up and running and apply the necessary config
+Run rebuild to get the application up and running and apply the necessary config
+
 ```
 ant rebuild
 ```
 
-The build process will do a number of things
+The build process will do a number of things:
+
 1. Run composer to install all of the necessary dependencies
 2. Create development and testing config for environment specific configuration
 3. Use vendor/bin/doctrine-module orm:schema-tool:drop to drop existing schema for the development database
