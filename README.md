@@ -1,77 +1,44 @@
-ZendSkeletonApplication
+zf2-doctrine-skeleton
 =======================
 
 Introduction
 ------------
-This is a simple, skeleton application using the ZF2 MVC layer and module
-systems. This application is meant to be used as a starting place for those
-looking to get their feet wet with ZF2.
+This is a Zend Framework 2 skeleton (based on the official skeleton https://github.com/zendframework/ZendSkeletonApplication 2.2.6) with
+integrated Doctrine, Doctrine Migrations, Doctrine Data Fixtures and PHPUnit. I've created an abstract PHPUnit test case for unit tests
+that will use Doctrine Data Fixtures. An abstract PHPUnit controller test case class exists to run Doctrine Data Fixtures for testing the API.
+
+Prerequisites
+------------
+The only dependency required is ant and Java. A build script exists under the build/ folder that will get the application off the ground.
+
 
 Installation
 ------------
+1. Copy build.properties.example from the build/ folder to build.properties
+    cd build/
+    cp build.properties.example build.properties
 
-Using Composer (recommended)
-----------------------------
-The recommended way to get a working copy of this project is to clone the repository
-and use `composer` to install dependencies using the `create-project` command:
+2. Edit the build.properties file and enter your database config
+    db.host=localhost
+    db.port=3306
+    db.user=root
+    db.password=password
+    db.name=test_db
+    db.test.name=testing_db
 
-    curl -s https://getcomposer.org/installer | php --
-    php composer.phar create-project -sdev --repository-url="https://packages.zendframework.com" zendframework/skeleton-application path/to/install
+Note, the db.test.name should specify a separate database. This is so PHPUnit can apply all of the data fixtures to a separate database, leaving
+your development database as is. I've opted to use Doctrine Data Fixtures so the exact state of the test database is known for every single
+unit/integration test. Obviously, unit tests won't care about the state of the database, therefore, you can simply extend \PHPUnit_Framework_TestCase,
+rather, than, AbstractPHPUnitTestCase.
 
-Alternately, clone the repository and manually invoke `composer` using the shipped
-`composer.phar`:
+3. Run rebuild to get the application up and running and apply the necessary config
+    ant rebuild
 
-    cd my/project/dir
-    git clone git://github.com/zendframework/ZendSkeletonApplication.git
-    cd ZendSkeletonApplication
-    php composer.phar self-update
-    php composer.phar install
-
-(The `self-update` directive is to ensure you have an up-to-date `composer.phar`
-available.)
-
-Another alternative for downloading the project is to grab it via `curl`, and
-then pass it to `tar`:
-
-    cd my/project/dir
-    curl -#L https://github.com/zendframework/ZendSkeletonApplication/tarball/master | tar xz --strip-components=1
-
-You would then invoke `composer` to install dependencies per the previous
-example.
-
-Using Git submodules
---------------------
-Alternatively, you can install using native git submodules:
-
-    git clone git://github.com/zendframework/ZendSkeletonApplication.git --recursive
-
-Web Server Setup
-----------------
-
-### PHP CLI Server
-
-The simplest way to get started if you are using PHP 5.4 or above is to start the internal PHP cli-server in the root directory:
-
-    php -S 0.0.0.0:8080 -t public/ public/index.php
-
-This will start the cli-server on port 8080, and bind it to all network
-interfaces.
-
-**Note: ** The built-in CLI server is *for development only*.
-
-### Apache Setup
-
-To setup apache, setup a virtual host to point to the public/ directory of the
-project and you should be ready to go! It should look something like below:
-
-    <VirtualHost *:80>
-        ServerName zf2-tutorial.localhost
-        DocumentRoot /path/to/zf2-tutorial/public
-        SetEnv APPLICATION_ENV "development"
-        <Directory /path/to/zf2-tutorial/public>
-            DirectoryIndex index.php
-            AllowOverride All
-            Order allow,deny
-            Allow from all
-        </Directory>
-    </VirtualHost>
+The build process will do a number of things:;
+1. Run composer to install all of the necessary dependencies.
+2. Create development and testing config for environment specific configuration.
+3. Use vendor/bin/doctrine-module orm:schema-tool:drop to drop existing schema for the development database.
+4. Use vendor/bin/doctrine-module orm:schema-too:update to create schema for the development database.
+5. Use vendor/bin/doctrine-module orm:schema-tool:drop to drop existing schema for the testing database.
+6. Use vendor/bin/doctrine-module orm:schema-too:update to create schema for the testing database.
+7. Apply all migrations under build/migrations to pre-populate the development database.
