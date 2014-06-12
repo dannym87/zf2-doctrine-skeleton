@@ -14,11 +14,11 @@ The only dependency required is ant and Java. A build script exists under the bu
 
 Installation
 ------------
-Copy build.properties.example from the build/ folder to build.properties
+Copy build.properties.dist from the build/ folder to build.properties
 
 ```
 cd build/
-cp build.properties.example build.properties
+cp build.properties.dist build.properties
 ```
 
 Edit the build.properties file and enter your database config
