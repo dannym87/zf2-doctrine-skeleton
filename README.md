@@ -40,11 +40,11 @@ rather, than, AbstractPHPUnitTestCase.
 ant rebuild
 ```
 
-The build process will do a number of things:;
-1. Run composer to install all of the necessary dependencies.
-2. Create development and testing config for environment specific configuration.
-3. Use vendor/bin/doctrine-module orm:schema-tool:drop to drop existing schema for the development database.
-4. Use vendor/bin/doctrine-module orm:schema-too:update to create schema for the development database.
-5. Use vendor/bin/doctrine-module orm:schema-tool:drop to drop existing schema for the testing database.
-6. Use vendor/bin/doctrine-module orm:schema-too:update to create schema for the testing database.
-7. Apply all migrations under build/migrations to pre-populate the development database.
+The build process will do a number of things
+1. Run composer to install all of the necessary dependencies
+2. Create development and testing config for environment specific configuration
+3. Use vendor/bin/doctrine-module orm:schema-tool:drop to drop existing schema for the development database
+4. Use vendor/bin/doctrine-module orm:schema-too:update to create schema for the development database
+5. Use vendor/bin/doctrine-module orm:schema-tool:drop to drop existing schema for the testing database
+6. Use vendor/bin/doctrine-module orm:schema-too:update to create schema for the testing database
+7. Apply all migrations under build/migrations to pre-populate the development database
