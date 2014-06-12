@@ -1,0 +1,6 @@
+db.host=localhost
+db.port=3306
+db.user=root
+db.password=password
+db.name=db_name
+db.test.name=db_test_name

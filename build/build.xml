@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="ZF2 Doctrine Skeleton" default="rebuild">
+
+    <property file="build.properties" />
+    <property environment="env"/>
+
+    <target name="rebuild" depends="run-composer, create-config, sync-schema, sync-test-schema, sync-migrations" />
+
+    <!-- install deps via composter -->
+    <target name="run-composer">
+        <exec executable="php" dir="../" failonerror="true">
+            <arg line="composer.phar"/>
+            <arg line="install"/>
+            <arg line="--prefer-dist"/>
+        </exec>
+    </target>
+
+    <!-- create db and local config -->
+    <target name="create-config">
+        <echo>Creating config files based on your settings from build.properties</echo>
+        <echo>file: config/autoload/doctrine.development.php.dist</echo>
+        <exec executable="cp" dir="../config/autoload" failonerror="true">
+            <arg line="doctrine.development.php.dist doctrine.development.php" />
+        </exec>
+        <replace file="../config/autoload/doctrine.development.php" token="{db.host}" value="${db.host}"/>
+        <replace file="../config/autoload/doctrine.development.php" token="{db.port}" value="${db.port}"/>
+        <replace file="../config/autoload/doctrine.development.php" token="{db.user}" value="${db.user}"/>
+        <replace file="../config/autoload/doctrine.development.php" token="{db.password}" value="${db.password}"/>
+        <replace file="../config/autoload/doctrine.development.php" token="{db.name}" value="${db.name}"/>
+
+        <echo>file: config/autoload/doctrine.testing.php.dist</echo>
+        <exec executable="cp" dir="../config/autoload" failonerror="true">
+            <arg line="doctrine.testing.php.dist doctrine.testing.php" />
+        </exec>
+        <replace file="../config/autoload/doctrine.testing.php" token="{db.host}" value="${db.host}"/>
+        <replace file="../config/autoload/doctrine.testing.php" token="{db.port}" value="${db.port}"/>
+        <replace file="../config/autoload/doctrine.testing.php" token="{db.user}" value="${db.user}"/>
+        <replace file="../config/autoload/doctrine.testing.php" token="{db.password}" value="${db.password}"/>
+        <replace file="../config/autoload/doctrine.testing.php" token="{db.test.name}" value="${db.test.name}"/>
+
+        <!-- this is required for Doctrine CLI -->
+        <echo>file: vendor/config/autoload/doctrine.development.php.dist</echo>
+        <exec executable="cp" dir="../vendor/config/autoload" failonerror="true">
+            <arg line="doctrine.development.php.dist doctrine.development.php" />
+        </exec>
+        <replace file="../vendor/config/autoload/doctrine.development.php" token="{db.host}" value="${db.host}"/>
+        <replace file="../vendor/config/autoload/doctrine.development.php" token="{db.port}" value="${db.port}"/>
+        <replace file="../vendor/config/autoload/doctrine.development.php" token="{db.user}" value="${db.user}"/>
+        <replace file="../vendor/config/autoload/doctrine.development.php" token="{db.password}" value="${db.password}"/>
+        <replace file="../vendor/config/autoload/doctrine.development.php" token="{db.name}" value="${db.name}"/>
+
+        <!-- this is required for Doctrine CLI -->
+        <echo>file: vendor/config/autoload/doctrine.testing.php.dist</echo>
+        <exec executable="cp" dir="../vendor/config/autoload" failonerror="true">
+            <arg line="doctrine.testing.php.dist doctrine.testing.php" />
+        </exec>
+        <replace file="../vendor/config/autoload/doctrine.testing.php" token="{db.host}" value="${db.host}"/>
+        <replace file="../vendor/config/autoload/doctrine.testing.php" token="{db.port}" value="${db.port}"/>
+        <replace file="../vendor/config/autoload/doctrine.testing.php" token="{db.user}" value="${db.user}"/>
+        <replace file="../vendor/config/autoload/doctrine.testing.php" token="{db.password}" value="${db.password}"/>
+        <replace file="../vendor/config/autoload/doctrine.testing.php" token="{db.test.name}" value="${db.test.name}"/>
+    </target>
+
+    <!-- sync entities with database -->
+    <target name="sync-schema" depends="drop-schema">
+        <echo>Sync the schema from Doctrine Entities to the DB</echo>
+        <exec executable="php" dir="../vendor/bin" failonerror="true">
+            <env key="APP_ENV" value="development" />
+            <arg value="doctrine-module" />
+            <arg value="orm:schema-tool:update" />
+            <arg value="--force" />
+        </exec>
+    </target>
+
+    <!-- drop entire schema -->
+    <target name="drop-schema">
+        <echo>Drop schema from the DB</echo>
+        <exec executable="php" dir="../vendor/bin" failonerror="true">
+            <env key="APP_ENV" value="development" />
+            <arg value="doctrine-module" />
+            <arg value="orm:schema-tool:drop" />
+            <arg value="--force" />
+        </exec>
+    </target>
+
+    <!-- sync entities with test database -->
+    <target name="sync-test-schema" depends="drop-test-schema">
+        <echo>Sync the schema from Doctrine Entities to the test DB</echo>
+        <exec executable="php" dir="../vendor/bin" failonerror="true">
+            <env key="APP_ENV" value="testing" />
+            <arg value="doctrine-module" />
+            <arg value="orm:schema-tool:update" />
+            <arg value="--force" />
+        </exec>
+    </target>
+
+    <!-- drop entire test schema -->
+    <target name="drop-test-schema">
+        <echo>Drop schema from the DB</echo>
+        <exec executable="php" dir="../vendor/bin" failonerror="true">
+            <env key="APP_ENV" value="testing" />
+            <arg value="doctrine-module" />
+            <arg value="orm:schema-tool:drop" />
+            <arg value="--force" />
+        </exec>
+    </target>
+
+    <!-- validate schema -->
+    <target name="validate-schema">
+        <echo>Validating schema from database with Doctrine Entities</echo>
+        <exec executable="php" dir="../vendor/bin" failonerror="true">
+            <env key="APP_ENV" value="development" />
+            <arg value="doctrine-module" />
+            <arg value="orm:validate-schema" />
+        </exec>
+    </target>
+
+    <!-- apply migrations -->
+    <target name="sync-migrations">
+        <echo>Sync Doctrine Migrations data</echo>
+        <exec executable="php" dir="../vendor/bin" failonerror="true">
+            <env key="APP_ENV" value="development" />
+            <arg value="doctrine-module" />
+            <arg value="migrations:migrate" />
+        </exec>
+    </target>
+
+    <!-- generate new migration -->
+    <target name="generate-migration">
+        <echo>Generate Doctrine Migration</echo>
+        <exec executable="php" dir="../vendor/bin" failonerror="true">
+            <env key="APP_ENV" value="development" />
+            <arg value="doctrine-module" />
+            <arg value="migrations:generate" />
+        </exec>
+    </target>
+
+    <!-- PHPUnit -->
+    <target name="phpunit">
+        <echo>Run PHPUnit</echo>
+        <exec executable="phpunit" dir="../module/Application/test" failonerror="true" />
+    </target>
+
+</project>
